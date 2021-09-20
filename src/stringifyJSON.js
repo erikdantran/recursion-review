@@ -39,14 +39,18 @@
 
 
 
-var stringifyJSON = function(obj) {
+var stringifyJSON = function (obj) {
   // your code goes here
   var string = '';
-  if (obj === null ) {
+  // if (obj === 'function' ||
+  //   obj === 'undefined') {
+  //   continue;
+  // }
+  if (obj === null) {
     return 'null';
   }
   if (typeof obj === 'number' ||
-      typeof obj === 'boolean') {
+    typeof obj === 'boolean') {
     string += obj.toString();
   }
   if (typeof obj === 'string') {
@@ -57,23 +61,31 @@ var stringifyJSON = function(obj) {
     // string += obj.forEach(element, stringifyJSON)
     for (var i = 0; i < obj.length; i++) {
       string += stringifyJSON(obj[i])
-      if (i !== obj.length-1) {
+      if (i !== obj.length - 1) {
         string += ',';
       }
     }
     string += ']';
   }
-
+  //   {'foo': true, 'bar': false, 'baz': null},
   if (typeof obj === 'object' && !Array.isArray(obj)) {
     string += '{';
     for (var key in obj) {
+      if (typeof obj[key] === 'function' || obj[key] === undefined) {
+        continue;
+      }
       string += stringifyJSON(key);
       string += ':';
-      string += stringifyJSON(obj[key])
+      string += stringifyJSON(obj[key]);
+      var indexes = Object.keys(obj);
+      var lastIndex = indexes.length - 1;
+      var current = indexes.indexOf(key);
+      if (current !== lastIndex) {
+        string += ',';
+      }
     }
     string += '}';
   }
-
 
   return string
 };
